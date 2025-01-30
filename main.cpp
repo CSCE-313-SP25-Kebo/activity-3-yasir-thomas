@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
             std::cout << "The child process will execute the command: ls -l after 6 seconds" << std::endl;
             /* TODO: SLEEP FOR 6 SECONDS*/
             sleep(6);
-            char *args[] = {"ls", "-l", NULL};
+            char *args[] = {(char*)"ls", (char*)"-l", NULL};
             /* TODO: EXECUTE THE COMMAND ls -l USING EXECVP*/
             execvp(args[0], args);
         }
