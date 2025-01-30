@@ -22,22 +22,27 @@ int main(int argc, char *argv[])
     }
 
     /* TODO: FORK A NEW PROCESS */
+    pid_t f = fork();
 
-    if (/* TODO: CONDITION IF FORK FAILS*/)
+    if (f < 0)
     {
         cout << "Fork failed" << endl;
         return 1;
     }
-    else if (/* TODO: CONDITION IF CHILD PROCESS */)
+    else if (f == 0)
     {
         cout << "Hello from the child process!" << endl;
         /* TODO: PRINT THE PARENT PID value: "The parent process ID is $ID" */
+        cout << "The parent process ID is $ID" << getppid() << endl;
 
         if (option % 2 == 0) // if the option number is even, execute the command ls -l and terminate normally
         {
             std::cout << "The child process will execute the command: ls -l after 6 seconds" << std::endl;
             /* TODO: SLEEP FOR 6 SECONDS*/
+            sleep(6);
+            char *args[] = {"ls", "-l", NULL};
             /* TODO: EXECUTE THE COMMAND ls -l USING EXECVP*/
+            execvp(args[0], args);
         }
         else // if the option number is odd, terminate with a kill signal
         {
@@ -45,21 +50,28 @@ int main(int argc, char *argv[])
             kill(getpid(), SIGINT);
         }
     }
-    else if (/*TODO: CONDITION IF PARENT PROCESS*/)
+    else if (f > 0)
     {
         int status;
 
         /* TODO: WAIT FOR CHILD PROCESS TO FINISH */
+        waitpid(f, &status, 0);
 
         cout << "\nHello from the parent process!" << endl;
 
         /* TODO: PRINT THE CHILD PID value: "The child process ID is $ID" */
+        cout << "The child process ID is $ID" << f << endl;
 
         /* TODO: PRINT THE EXIT STATUS OF THE CHILD PROCESS BASED waitpid().
         MAKE SURE TO PASS BY REFERENCE THE STATUS VARIABLE TO THE SECOND PARAMETER OF waitpid()
         IF WIFEXITED, PRINT THE MESSAGE "The child process exited normally" WITH ENDLINE
         IF WIFSIGNALED, PRINT THE MESSAGE "The child process exited due to the kill signal" WITH ENDLINE
         */
+       if(status == 0) {
+        cout << "The child process exited normally" << endl;
+       } else if (status == 1)  {
+        cout << "The child process exited due to the kill signal" << endl;
+       }
     }
 
     return 0;
